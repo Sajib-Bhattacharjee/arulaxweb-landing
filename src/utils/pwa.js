@@ -20,7 +20,12 @@ class PWAUtils {
 
   // Service Worker Registration and Management
   async setupServiceWorker() {
-    if ("serviceWorker" in navigator) {
+    // Only register service worker in production (HTTPS)
+    if (
+      "serviceWorker" in navigator &&
+      (window.location.protocol === "https:" ||
+        window.location.hostname === "localhost")
+    ) {
       try {
         const registration = await navigator.serviceWorker.register("/sw.js");
         this.swRegistration = registration;
@@ -50,8 +55,13 @@ class PWAUtils {
           this.handleServiceWorkerMessage(event.data);
         });
       } catch (error) {
-        console.error("[PWA] Service Worker registration failed:", error);
+        console.warn("[PWA] Service Worker registration failed:", error);
+        // Don't throw error, just log it
       }
+    } else {
+      console.log(
+        "[PWA] Service Worker not supported or not in secure context"
+      );
     }
   }
 

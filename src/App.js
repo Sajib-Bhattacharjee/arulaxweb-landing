@@ -37,28 +37,58 @@ function App() {
     // Initialize PWA features
     const initPWA = async () => {
       try {
-        // Check if service worker is supported and ready
-        if ("serviceWorker" in navigator) {
-          const registration = await navigator.serviceWorker.ready;
-          console.log("[App] Service Worker ready:", registration);
+        // Check if we're in production or localhost
+        const isProduction =
+          window.location.protocol === "https:" ||
+          window.location.hostname === "localhost";
+
+        if (isProduction) {
+          // Check if service worker is supported and ready
+          if ("serviceWorker" in navigator) {
+            try {
+              const registration = await navigator.serviceWorker.ready;
+              console.log("[App] Service Worker ready:", registration);
+            } catch (swError) {
+              console.warn("[App] Service Worker not ready:", swError);
+            }
+          }
+
+          // Get PWA status
+          try {
+            const pwaStatus = pwaUtils.getPWAStatus();
+            console.log("[App] PWA Status:", pwaStatus);
+          } catch (pwaError) {
+            console.warn("[App] PWA Status error:", pwaError);
+          }
+        } else {
+          console.log(
+            "[App] Running in development mode, PWA features disabled"
+          );
         }
-
-        // Get PWA status
-        const pwaStatus = pwaUtils.getPWAStatus();
-        console.log("[App] PWA Status:", pwaStatus);
-
-        // Set loading to false after PWA initialization
-        setIsLoading(false);
 
         // Preload critical resources
         preloadCriticalResources();
       } catch (error) {
         console.error("[App] PWA initialization error:", error);
+      } finally {
+        // Always set loading to false, regardless of PWA status
         setIsLoading(false);
       }
     };
 
-    initPWA();
+    // Add timeout to ensure loading screen doesn't get stuck
+    const timeoutId = setTimeout(() => {
+      console.log("[App] Loading timeout reached, showing app");
+      setIsLoading(false);
+    }, 3000); // 3 second timeout
+
+    initPWA()
+      .then(() => {
+        clearTimeout(timeoutId);
+      })
+      .catch(() => {
+        clearTimeout(timeoutId);
+      });
   }, []);
 
   // Preload critical resources for better performance
