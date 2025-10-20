@@ -1,7 +1,7 @@
 // AruLax Web PWA Service Worker
 // Advanced caching strategies for optimal performance and offline capability
 
-const CACHE_NAME = "arulax-web-v1.0.0";
+const CACHE_NAME = "arulax-web-offer-v1.0.0";
 const STATIC_CACHE = "arulax-static-v1";
 const DYNAMIC_CACHE = "arulax-dynamic-v1";
 const IMAGE_CACHE = "arulax-images-v1";
@@ -289,7 +289,7 @@ self.addEventListener("message", (event) => {
 
 // Periodic background sync (if supported)
 if ("periodicSync" in self.registration) {
-  self.addEventListener("periodic同步", (event) => {
+  self.addEventListener("periodicsync", (event) => {
     if (event.tag === "content-sync") {
       event.waitUntil(updateContent());
     }
