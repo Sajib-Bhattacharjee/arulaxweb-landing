@@ -2653,6 +2653,24 @@ html {
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
+/* Contact form specific styles */
+.contact-form .form-control {
+  background: #ffffff;
+  color: #333333;
+  border: 2px solid #e9ecef;
+}
+
+.contact-form .form-control:focus {
+  background: #ffffff;
+  color: #333333;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.contact-form .form-control::placeholder {
+  color: #6c757d;
+}
+
 /* Success Message */
 .success-message {
   position: absolute;

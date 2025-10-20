@@ -314,51 +314,6 @@ const Cart = () => {
     setTimeout(() => setShowNotification(false), 2000);
   };
 
-  const addTestItems = () => {
-    const testItems = [
-      {
-        id: 1,
-        title: "Business Management System",
-        description:
-          "Complete business management solution with CRM, inventory, and financial tracking.",
-        image:
-          "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80",
-        technologies: ["React", "Node.js", "MongoDB", "Stripe"],
-        category: "Business",
-        liveUrl: "#",
-        githubUrl: "#",
-        price: 2999,
-        quantity: 1,
-      },
-      {
-        id: 2,
-        title: "Corporate Website",
-        description:
-          "Professional corporate website with modern design and advanced features.",
-        image:
-          "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80",
-        technologies: [
-          "Next.js",
-          "TypeScript",
-          "Tailwind CSS",
-          "Framer Motion",
-        ],
-        category: "Corporate",
-        liveUrl: "#",
-        githubUrl: "#",
-        price: 2499,
-        quantity: 2,
-      },
-    ];
-    console.log("Adding test items:", testItems);
-    setCartItems(testItems);
-    window.globalCart = testItems;
-    localStorage.setItem("projectCart", JSON.stringify(testItems));
-    setNotificationMessage("Test items added to cart!");
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 2000);
-  };
-
   const goBack = () => {
     window.history.back();
   };
