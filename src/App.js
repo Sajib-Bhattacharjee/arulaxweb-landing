@@ -29,7 +29,74 @@ function App() {
 
     // Listen for hash changes
     window.addEventListener("hashchange", handleHashChange);
+
     return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  // Prevent horizontal scroll and layout shifts on mobile
+  useEffect(() => {
+    // Function to lock horizontal scrolling
+    const preventHorizontalScroll = () => {
+      const html = document.documentElement;
+      const body = document.body;
+
+      // Force lock horizontal scroll
+      html.style.overflowX = "hidden";
+      body.style.overflowX = "hidden";
+
+      // Prevent width changes
+      html.style.width = "100%";
+      body.style.width = "100%";
+      html.style.maxWidth = "100%";
+      body.style.maxWidth = "100%";
+
+      // Lock touch behavior
+      body.style.touchAction = "pan-y pinch-zoom";
+      body.style.overscrollBehaviorX = "none";
+    };
+
+    // Apply immediately
+    preventHorizontalScroll();
+
+    // Prevent touch move that causes horizontal scroll
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    const handleTouchStart = (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e) => {
+      const touchEndX = e.touches[0].clientX;
+      const touchEndY = e.touches[0].clientY;
+
+      const deltaX = Math.abs(touchEndX - touchStartX);
+      const deltaY = Math.abs(touchEndY - touchStartY);
+
+      // If horizontal swipe is detected and greater than vertical
+      if (deltaX > deltaY && deltaX > 10) {
+        // Prevent horizontal scroll/swipe
+        e.preventDefault();
+      }
+    };
+
+    // Add touch event listeners
+    document.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
+    document.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    // Reapply on resize
+    window.addEventListener("resize", preventHorizontalScroll);
+    window.addEventListener("orientationchange", preventHorizontalScroll);
+
+    return () => {
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("resize", preventHorizontalScroll);
+      window.removeEventListener("orientationchange", preventHorizontalScroll);
+    };
   }, []);
 
   // PWA Initialization
@@ -145,16 +212,16 @@ function App() {
     <div className="App">
       <Header />
       {currentPage === "cart" ? (
-        <Cart />
+        <Cart key="cart-page" />
       ) : (
-        <>
-          <OfferTimer />
-          <Projects />
-          <CustomProject />
-          <Contact />
-        </>
+        <React.Fragment key="home-page">
+          <OfferTimer key="offer-timer" />
+          <Projects key="projects-section" />
+          <CustomProject key="custom-project" />
+          <Contact key="contact-section" />
+        </React.Fragment>
       )}
-      <Footer />
+      <Footer key="footer" />
     </div>
   );
 }

@@ -10,11 +10,22 @@ import {
   FaGithub,
   FaEye,
 } from "react-icons/fa";
+import emailjs from "@emailjs/browser";
+
+// âœ… EMAILJS CONFIGURED - READY TO USE
+const EMAILJS_CONFIG = {
+  serviceId: "service_nxfft8o", // Your EmailJS Service ID
+  templateId: "template_7wbakmm", // Your EmailJS Template ID
+  publicKey: "KIuUNSFAOq0IwhtWK", // Your EmailJS Public Key
+  adminTemplateId: "", // (Optional) For admin notifications - add if needed
+  adminEmail: "", // (Optional) Your email to receive order notifications
+};
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   // Load cart from localStorage on component mount
   useEffect(() => {
@@ -318,6 +329,98 @@ const Cart = () => {
     window.history.back();
   };
 
+  // Generate unique order ID
+  const generateOrderId = () => {
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000);
+    return `ARX-${timestamp}-${random}`;
+  };
+
+  // Send order directly to your Gmail
+  const sendOrderEmail = async () => {
+    console.log("=== ORDER NOW CLICKED ===");
+    console.log("EmailJS Config:", EMAILJS_CONFIG);
+    console.log("Cart Items:", cartItems);
+
+    setIsSendingEmail(true);
+
+    try {
+      const orderId = generateOrderId();
+      console.log("Generated Order ID:", orderId);
+      const orderDate = new Date().toLocaleString("en-US", {
+        dateStyle: "full",
+        timeStyle: "short",
+      });
+
+      // Format order items for email
+      const orderItemsText = cartItems
+        .map(
+          (item, index) =>
+            `${index + 1}. ${item.title}\n   Category: ${
+              item.category
+            }\n   Quantity: ${item.quantity}\n   Price: $${(
+              item.price * 0.5
+            ).toFixed(2)} each\n   Subtotal: $${(
+              item.price *
+              0.5 *
+              item.quantity
+            ).toFixed(2)}\n`
+        )
+        .join("\n");
+
+      const subtotal = totalPrice.toFixed(2);
+      const discount = (totalPrice * 0.5).toFixed(2);
+      const totalAmount = (totalPrice * 0.5).toFixed(2);
+      const youSaved = discount;
+
+      // Email template parameters - sends directly to your Gmail
+      const templateParams = {
+        customer_name: "New Website Order",
+        customer_email: "orders@arulaxweb.com",
+        order_id: orderId,
+        order_date: orderDate,
+        total_items: totalItems,
+        order_items: orderItemsText,
+        subtotal: subtotal,
+        discount: discount,
+        total_amount: totalAmount,
+        you_saved: youSaved,
+      };
+
+      // Send order details directly to your Gmail
+      console.log("Sending email with params:", templateParams);
+
+      const result = await emailjs.send(
+        EMAILJS_CONFIG.serviceId,
+        EMAILJS_CONFIG.templateId,
+        templateParams,
+        EMAILJS_CONFIG.publicKey
+      );
+
+      console.log("Email sent successfully:", result);
+
+      // Success - show confirmation
+      setNotificationMessage("Your order has been placed successfully!");
+      setShowNotification(true);
+
+      // Clear cart and navigate home after delay
+      setTimeout(() => {
+        setShowNotification(false);
+        clearCart();
+        window.location.hash = "#"; // Navigate to home
+      }, 3000);
+    } catch (error) {
+      console.error("Email sending failed:", error);
+      setNotificationMessage(
+        "âŒ Failed to place order. Please try again or contact us directly."
+      );
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 5000);
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
   const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
   const totalItems = safeCartItems.reduce(
     (total, item) => total + (item.quantity || 1),
@@ -442,7 +545,7 @@ const Cart = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                🔄 Refresh Cart
+                ðŸ”„ Refresh Cart
               </motion.button>
               <motion.button
                 className="continue-shopping-btn"
@@ -458,7 +561,7 @@ const Cart = () => {
                   color: "white",
                 }}
               >
-                🛒 Continue Shopping
+                ðŸ›’ Continue Shopping
               </motion.button>
               {cartItems.length > 0 && (
                 <motion.button
@@ -633,12 +736,12 @@ const Cart = () => {
                               <div className="features-section">
                                 <span className="section-label">Features:</span>
                                 <ul className="features-list">
-                                  <li>✅ Responsive Design</li>
-                                  <li>✅ Modern UI/UX</li>
-                                  <li>✅ Cross-browser Compatible</li>
-                                  <li>✅ SEO Optimized</li>
-                                  <li>✅ Fast Loading</li>
-                                  <li>✅ Mobile Friendly</li>
+                                  <li>âœ… Responsive Design</li>
+                                  <li>âœ… Modern UI/UX</li>
+                                  <li>âœ… Cross-browser Compatible</li>
+                                  <li>âœ… SEO Optimized</li>
+                                  <li>âœ… Fast Loading</li>
+                                  <li>âœ… Mobile Friendly</li>
                                 </ul>
                               </div>
 
@@ -772,25 +875,20 @@ const Cart = () => {
                       className="order-now-btn"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        setNotificationMessage(
-                          "Order placed successfully! We'll contact you soon."
-                        );
-                        setShowNotification(true);
-                        setTimeout(() => setShowNotification(false), 3000);
-                      }}
+                      onClick={sendOrderEmail}
+                      disabled={isSendingEmail}
                     >
                       <FaShoppingCart />
-                      Order Now
+                      {isSendingEmail ? "Placing Order..." : "Order Now"}
                     </motion.button>
 
                     <div className="order-benefits">
                       <h5>What's Included:</h5>
                       <ul>
-                        <li>📦 Complete Source Code</li>
-                        <li>📚 Documentation</li>
-                        <li>🚀 Lifetime Support</li>
-                        <li>⚡ Instant Download</li>
+                        <li>ðŸ“¦ Complete Source Code</li>
+                        <li>ðŸ“š Documentation</li>
+                        <li>ðŸš€ Lifetime Support</li>
+                        <li>âš¡ Instant Download</li>
                       </ul>
                     </div>
                   </div>
