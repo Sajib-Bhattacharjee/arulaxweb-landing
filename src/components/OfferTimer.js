@@ -19,11 +19,22 @@ const OfferTimer = () => {
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = 600;
+
+    // Responsive canvas sizing
+    const updateCanvasSize = () => {
+      const width = window.innerWidth;
+      const isMobile = width <= 768;
+      canvas.width = width;
+      canvas.height = isMobile
+        ? Math.min(width * 0.8, 500)
+        : Math.min(width * 0.5, 600);
+    };
+
+    updateCanvasSize();
 
     const particles = [];
-    const particleCount = 80;
+    // Responsive particle count based on screen size
+    const particleCount = window.innerWidth <= 768 ? 40 : 80;
 
     // Create advanced particles with different types
     for (let i = 0; i < particleCount; i++) {
@@ -92,12 +103,18 @@ const OfferTimer = () => {
     animate();
 
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = 600;
+      updateCanvasSize();
+      // Recreate particles on resize to match new dimensions
+      particles.forEach((particle) => {
+        if (particle.x > canvas.width) particle.x = canvas.width - 10;
+        if (particle.y > canvas.height) particle.y = canvas.height - 10;
+      });
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   // Advanced background animation
@@ -259,12 +276,13 @@ const OfferTimer = () => {
                 color: "transparent",
                 WebkitTextFillColor: "transparent",
                 fontWeight: "bold",
-                fontSize: "1.2rem",
+                fontSize: "clamp(0.85rem, 2.5vw, 1.2rem)",
                 textShadow:
                   "0 0 20px rgba(255, 107, 107, 0.8), 0 0 40px rgba(249, 202, 36, 0.6), 0 0 60px rgba(102, 126, 234, 0.4)",
                 filter: "drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))",
                 zIndex: "100",
                 position: "relative",
+                whiteSpace: "nowrap",
               }}
             >
               Limited Time Offer
@@ -280,26 +298,27 @@ const OfferTimer = () => {
             <span
               style={{
                 color: "#ffffff",
-                display: "inline-block",
-                fontSize: "3rem",
+                display: "block",
+                fontSize: "clamp(1.5rem, 5vw, 3rem)",
                 fontWeight: "900",
                 textShadow:
                   "3px 3px 6px rgba(0, 0, 0, 1), 0 0 15px rgba(0, 0, 0, 1)",
                 filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 1))",
                 zIndex: "100",
                 position: "relative",
+                marginBottom: "0.5rem",
               }}
             >
               Get Your Project Done
             </span>
             <span
               style={{
-                display: "inline-block",
-                marginLeft: "10px",
-                fontSize: "3rem",
+                display: "block",
+                fontSize: "clamp(1.5rem, 5vw, 3rem)",
                 fontWeight: "900",
                 zIndex: "100",
                 position: "relative",
+                marginTop: "0.5rem",
               }}
             >
               {["5", "0", "%", " ", "O", "f", "f"].map((char, index) => {
@@ -363,13 +382,16 @@ const OfferTimer = () => {
             <span
               style={{
                 color: "#ffffff",
-                fontSize: "1.3rem",
+                fontSize: "clamp(0.9rem, 3vw, 1.3rem)",
                 fontWeight: "600",
                 textShadow:
                   "2px 2px 4px rgba(0, 0, 0, 1), 0 0 10px rgba(0, 0, 0, 1)",
                 filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 1))",
                 zIndex: "100",
                 position: "relative",
+                display: "block",
+                maxWidth: "90%",
+                margin: "0 auto",
               }}
             >
               Professional web development services at an unbeatable price

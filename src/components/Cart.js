@@ -9,6 +9,12 @@ import {
   FaExternalLinkAlt,
   FaGithub,
   FaEye,
+  FaSync,
+  FaStore,
+  FaBox,
+  FaBook,
+  FaRocket,
+  FaBolt,
 } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
 
@@ -545,7 +551,8 @@ const Cart = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                ðŸ”„ Refresh Cart
+                <FaSync />
+                Refresh Cart
               </motion.button>
               <motion.button
                 className="continue-shopping-btn"
@@ -561,7 +568,8 @@ const Cart = () => {
                   color: "white",
                 }}
               >
-                ðŸ›’ Continue Shopping
+                <FaStore />
+                Continue Shopping
               </motion.button>
               {cartItems.length > 0 && (
                 <motion.button
@@ -605,6 +613,7 @@ const Cart = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
+                <FaStore />
                 Continue Shopping
               </motion.button>
             </div>
@@ -758,7 +767,7 @@ const Cart = () => {
                                 </motion.a>
                                 <motion.a
                                   href={item.githubUrl}
-                                  className="action-btn source-code"
+                                  className="action-btn source-code d-md-none"
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
                                 >
@@ -766,7 +775,7 @@ const Cart = () => {
                                   Source Code
                                 </motion.a>
                                 <motion.button
-                                  className="action-btn preview"
+                                  className="action-btn preview d-md-none"
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
                                 >
@@ -885,10 +894,22 @@ const Cart = () => {
                     <div className="order-benefits">
                       <h5>What's Included:</h5>
                       <ul>
-                        <li>ðŸ“¦ Complete Source Code</li>
-                        <li>ðŸ“š Documentation</li>
-                        <li>ðŸš€ Lifetime Support</li>
-                        <li>âš¡ Instant Download</li>
+                        <li>
+                          <FaBox className="benefit-icon" />
+                          <span>Complete Source Code</span>
+                        </li>
+                        <li>
+                          <FaBook className="benefit-icon" />
+                          <span>Documentation</span>
+                        </li>
+                        <li>
+                          <FaRocket className="benefit-icon" />
+                          <span>Lifetime Support</span>
+                        </li>
+                        <li>
+                          <FaBolt className="benefit-icon" />
+                          <span>Instant Download</span>
+                        </li>
                       </ul>
                     </div>
                   </div>

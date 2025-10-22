@@ -352,29 +352,28 @@ const Contact = () => {
                     <span>Sending...</span>
                   ) : (
                     <>
-                      <motion.div
-                        animate={{ rotate: [0, 10, -10, 0] }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
-                      >
-                        <FaPaperPlane className="me-2" />
-                      </motion.div>
+                      <FaPaperPlane className="me-2" />
                       Send Message
                     </>
                   )}
                 </motion.button>
               </form>
-
-              {/* Success Message */}
-              {showSuccess && (
+            </motion.div>
+            
+            {/* Success Message - Centered on Screen */}
+            {showSuccess && (
+              <motion.div
+                className="success-message-overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
                 <motion.div
                   className="success-message"
-                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                  initial={{ opacity: 0, y: 50, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.8 }}
+                  exit={{ opacity: 0, y: -50, scale: 0.8 }}
                   transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
                 >
                   <motion.div
@@ -401,8 +400,8 @@ const Contact = () => {
                     hours.
                   </motion.p>
                 </motion.div>
-              )}
-            </motion.div>
+              </motion.div>
+            )}
           </div>
 
           <div className="col-lg-4">
